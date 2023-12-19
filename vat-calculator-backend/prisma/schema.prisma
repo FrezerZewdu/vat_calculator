@@ -9,3 +9,87 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  password String
+  role roles
+  expiryDate DateTime
+  createdBy Int?
+  owner User? @relation("userOwner",fields: [createdBy], references: [id])
+  accounts User [] @relation("userOwner")
+  items Item []
+}
+
+model Item {
+  id Int @id @default(autoincrement())
+  name String @unique
+  unit units
+  createdBy Int
+  owner User @relation(fields: [createdBy], references: [id])
+  inventoryRecords Inventory []
+  soldItems SaleOrder []
+}
+
+model Inventory {
+  itemId Int
+  item Item @relation(fields: [itemId], references: [id])
+  startDate DateTime @default(now())
+  unitPrice Decimal
+  quantity Decimal
+  isVat Boolean
+
+  @@id([itemId,startDate])
+}
+
+model Transaction {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  creditCloseDate DateTime?
+  totalAmount Decimal
+  remainingAmount Decimal?
+  void Boolean @default(false)
+  voidDate DateTime? 
+  soldItems SaleOrder []
+  creditPayments CreditTracker []
+}
+
+model SaleOrder {
+  transactionId Int
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+  itemId Int
+  item Item @relation(fields: [itemId], references: [id])
+  unitPrice Decimal
+  quantity Decimal
+  isVat Boolean
+  @@id([transactionId, itemId])
+}
+
+model CreditTracker {
+  transactionId Int
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+  date DateTime @default(now())
+  amountPayed Decimal
+  fileLocation String?
+
+  @@id([transactionId, date])
+}
+
+enum roles {
+  supAdmin
+  norAdmin
+  user
+  sales
+  finance
+}
+
+enum units {
+  kg
+  unit
+  litre
+  area
+  volume
+  meter
+}
