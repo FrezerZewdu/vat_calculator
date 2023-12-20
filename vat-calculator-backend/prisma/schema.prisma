@@ -27,6 +27,7 @@ model Item {
   id Int @id @default(autoincrement())
   name String @unique
   unit units
+  isActive Boolean @default(true)
   createdBy Int
   owner User @relation(fields: [createdBy], references: [id])
   inventoryRecords Inventory []
