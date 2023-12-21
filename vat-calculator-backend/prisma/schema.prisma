@@ -49,8 +49,8 @@ model Transaction {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   creditCloseDate DateTime?
-  totalAmount Decimal
-  remainingAmount Decimal?
+  totalAmount Float
+  remainingAmount Float?
   void Boolean @default(false)
   voidDate DateTime? 
   soldItems SaleOrder []
@@ -72,7 +72,7 @@ model CreditTracker {
   transactionId Int
   transaction Transaction @relation(fields: [transactionId], references: [id])
   date DateTime @default(now())
-  amountPayed Decimal
+  amountPayed Float
   fileLocation String?
 
   @@id([transactionId, date])
