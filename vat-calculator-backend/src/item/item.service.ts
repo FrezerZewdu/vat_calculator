@@ -9,6 +9,68 @@ import { createItemDto, fetchItemsDto, updateItemDto } from './dto/item.dto';
 export class ItemService {
   constructor(private prisma: PrismaService) {}
 
+  async fetchAllItemInfo(page: number) {
+    try {
+      const cursor = page == 1 ? 1 : 10 * (page - 1);
+      const items = await this.prisma.item.findMany({
+        cursor: {
+          id: cursor,
+        },
+        take: 9,
+        include: {
+          inventoryRecords: {
+            select: {
+              isVat: true,
+              quantity: true,
+              unitPrice: true,
+            },
+            orderBy: {
+              startDate: 'desc',
+            },
+          },
+          soldItems: {
+            select: {
+              isVat: true,
+              quantity: true,
+            },
+          },
+        },
+      });
+      items.forEach((item) => {
+        let normalSum = 0;
+        let vatSum = 0;
+        let normalSold = 0;
+        let vatSold = 0;
+        const latestPrice = item.inventoryRecords[0].unitPrice;
+        item.inventoryRecords.forEach((record) => {
+          if (record.isVat) {
+            vatSum += record.quantity;
+          } else {
+            normalSum += record.quantity;
+          }
+        });
+        item.soldItems.forEach((sale) => {
+          if (sale.isVat) {
+            vatSold += sale.quantity;
+          } else {
+            normalSold += sale.quantity;
+          }
+        });
+        const normalStockRemaining = normalSum - normalSold;
+        const vatStockRemaining = vatSum - vatSold;
+
+        item['vatStock'] = vatStockRemaining;
+        item['normalStock'] = normalStockRemaining;
+        item['latestPrice'] = latestPrice;
+      });
+      return {
+        data: items,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async fetchAllItems(paginationInfo: PaginationInfoDto) {
     try {
       const perPage = paginationInfo.perPage;
@@ -65,6 +127,29 @@ export class ItemService {
       });
       return {
         data: presentItems,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async fetchItemDetail(itemId: number) {
+    try {
+      const item = await this.prisma.item.findUnique({
+        where: {
+          id: itemId,
+        },
+        include: {
+          inventoryRecords: {
+            orderBy: {
+              startDate: 'desc',
+            },
+          },
+          soldItems: true,
+        },
+      });
+      return {
+        data: item,
       };
     } catch (error) {
       console.log(error);
