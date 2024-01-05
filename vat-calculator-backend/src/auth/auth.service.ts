@@ -14,7 +14,6 @@ export class AuthService {
   ) {}
   async signup(request: SignupDto) {
     const date = new Date(request.expiryDate);
-    date.toISOString();
     // generate the password hash
     const password = await argon.hash(request.password);
     // save the new user in the db
@@ -25,7 +24,7 @@ export class AuthService {
           password,
           name: request.name,
           role: request.role,
-          expiryDate: request.expiryDate,
+          expiryDate: date.toISOString(),
           createdBy: request?.createdBy,
         },
       });
