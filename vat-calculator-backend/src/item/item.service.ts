@@ -41,27 +41,33 @@ export class ItemService {
         let vatSum = 0;
         let normalSold = 0;
         let vatSold = 0;
-        const latestPrice = item.inventoryRecords[0].unitPrice;
-        item.inventoryRecords.forEach((record) => {
-          if (record.isVat) {
-            vatSum += record.quantity;
-          } else {
-            normalSum += record.quantity;
-          }
-        });
-        item.soldItems.forEach((sale) => {
-          if (sale.isVat) {
-            vatSold += sale.quantity;
-          } else {
-            normalSold += sale.quantity;
-          }
-        });
-        const normalStockRemaining = normalSum - normalSold;
-        const vatStockRemaining = vatSum - vatSold;
+        if (item.inventoryRecords.length) {
+          const latestPrice = item.inventoryRecords[0].unitPrice;
+          item.inventoryRecords.forEach((record) => {
+            if (record.isVat) {
+              vatSum += record.quantity;
+            } else {
+              normalSum += record.quantity;
+            }
+          });
+          item.soldItems.forEach((sale) => {
+            if (sale.isVat) {
+              vatSold += sale.quantity;
+            } else {
+              normalSold += sale.quantity;
+            }
+          });
+          const normalStockRemaining = normalSum - normalSold;
+          const vatStockRemaining = vatSum - vatSold;
 
-        item['vatStock'] = vatStockRemaining;
-        item['normalStock'] = normalStockRemaining;
-        item['latestPrice'] = latestPrice;
+          item['vatStock'] = vatStockRemaining;
+          item['normalStock'] = normalStockRemaining;
+          item['latestPrice'] = latestPrice;
+        } else {
+          item['vatStock'] = 0;
+          item['normalStock'] = 0;
+          item['latestPrice'] = 0;
+        }
       });
       return {
         data: items,
@@ -184,6 +190,7 @@ export class ItemService {
         },
       });
       return {
+        message: 'Item Updated',
         data: item,
       };
     } catch (error) {
@@ -199,6 +206,7 @@ export class ItemService {
         },
       });
       return {
+        message: 'Item deleted',
         data: item,
       };
     } catch (error) {
