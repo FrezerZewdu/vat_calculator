@@ -22,6 +22,13 @@ import { createItemDto, fetchItemsDto, updateItemDto } from './dto/item.dto';
 export class ItemController {
   constructor(private itemService: ItemService) {}
 
+  @Get('getAll')
+  @UseGuards(RolesGuard)
+  @HasRoles(roles.norAdmin)
+  fetchItemsInfo(@Query('page') page: number = 1) {
+    return this.itemService.fetchAllItemInfo(page);
+  }
+
   @Get()
   @UseGuards(RolesGuard)
   @HasRoles(roles.norAdmin)
