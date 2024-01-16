@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vuepic/vue-datepicker": "^7.4.1",
     "autoprefixer": "^10",
     "click-outside-vue3": "^4.0.1",
     "postcss": "^8",
