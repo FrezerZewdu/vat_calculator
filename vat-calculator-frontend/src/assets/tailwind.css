@@ -6,6 +6,6 @@
 
 @layer components {
     .primary-button {
-        @apply  bg-primary hover:bg-primary active:scale-95 transition-all rounded
+        @apply  bg-primary hover:bg-primaryHover active:scale-95 transition-all rounded text-white
     }
 }
