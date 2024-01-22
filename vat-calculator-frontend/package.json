@@ -10,6 +10,7 @@
   "dependencies": {
     "@vuepic/vue-datepicker": "^7.4.1",
     "autoprefixer": "^10",
+    "axios": "^1.6.5",
     "click-outside-vue3": "^4.0.1",
     "pinia": "^2.1.7",
     "postcss": "^8",
