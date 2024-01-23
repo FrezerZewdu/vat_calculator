@@ -6,3 +6,6 @@ export const DATETIME_OPTIONS = {
   hour: "numeric" as const,
   minute: "numeric" as const,
 };
+
+export const FETCH_SUCCESS_STATUS = 200;
+export const POST_SUCCESS_STATUS = 201;
