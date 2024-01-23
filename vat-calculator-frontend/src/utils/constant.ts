@@ -9,3 +9,5 @@ export const DATETIME_OPTIONS = {
 
 export const FETCH_SUCCESS_STATUS = 200;
 export const POST_SUCCESS_STATUS = 201;
+
+export const VAT_PERCENTAGE = 0.15;
