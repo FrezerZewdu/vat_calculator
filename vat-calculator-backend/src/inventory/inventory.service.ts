@@ -21,10 +21,12 @@ export class InventoryService {
             },
           },
         },
+        include: {
+          inventoryRecords: true,
+          soldItems: true,
+        },
       });
-      return {
-        data: record,
-      };
+      return record;
     } catch (error) {
       console.log(error);
     }

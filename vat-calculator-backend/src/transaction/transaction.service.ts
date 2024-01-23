@@ -41,9 +41,7 @@ export class TransactionService {
           page: paginationInfo.page,
         },
       );
-      return {
-        data: transactions,
-      };
+      return transactions;
     } catch (error) {
       console.log(error);
     }
@@ -147,9 +145,7 @@ export class TransactionService {
         return transaction;
       });
 
-      return {
-        data: transaction,
-      };
+      return transaction;
     } catch (error) {
       console.log(error);
     }
@@ -214,9 +210,7 @@ export class TransactionService {
         return record;
       });
 
-      return {
-        data: record,
-      };
+      return record;
     } catch (error) {
       console.log(error);
     }

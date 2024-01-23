@@ -69,9 +69,7 @@ export class ItemService {
           item['latestPrice'] = 0;
         }
       });
-      return {
-        data: items,
-      };
+      return items;
     } catch (error) {
       console.log(error);
     }
@@ -88,9 +86,7 @@ export class ItemService {
           page: paginationInfo.page,
         },
       );
-      return {
-        data: items,
-      };
+      return items;
     } catch (error) {
       console.log(error);
     }
@@ -131,9 +127,7 @@ export class ItemService {
           presentItems.push(item);
         }
       });
-      return {
-        data: presentItems,
-      };
+      return presentItems;
     } catch (error) {
       console.log(error);
     }
@@ -154,9 +148,7 @@ export class ItemService {
           soldItems: true,
         },
       });
-      return {
-        data: item,
-      };
+      return item;
     } catch (error) {
       console.log(error);
     }
@@ -169,9 +161,7 @@ export class ItemService {
           ...itemInfo,
         },
       });
-      return {
-        data: item,
-      };
+      return item;
     } catch (error) {
       console.log(error);
     }
