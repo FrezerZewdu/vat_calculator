@@ -182,7 +182,7 @@ export class TransactionService {
   // TODO: create trigger during credit finish to add date of credit finish
   async addCreditRecord(
     transactionId: number,
-    creditRecord: createCreditRecord,
+    amountPayed: number,
     fileLocation?: string,
   ) {
     try {
@@ -210,7 +210,7 @@ export class TransactionService {
 
         // If incoming credit record is higher than that is left
         if (
-          creditSum._sum.amountPayed + creditRecord.amountPayed >
+          creditSum._sum.amountPayed + amountPayed >
           transactionTotalAmount.totalAmount
         ) {
           throw new UnprocessableEntityException(
@@ -225,12 +225,12 @@ export class TransactionService {
           data: {
             creditPayments: {
               create: {
-                amountPayed: creditRecord.amountPayed,
+                amountPayed: amountPayed,
                 fileLocation,
               },
             },
             remainingAmount: {
-              decrement: creditRecord.amountPayed,
+              decrement: amountPayed,
             },
           },
         });
