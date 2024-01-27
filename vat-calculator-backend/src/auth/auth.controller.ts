@@ -19,6 +19,7 @@ export class AuthControllor {
   @HasRoles(roles.supAdmin, roles.norAdmin)
   @UseGuards(JwtGuard, RolesGuard)
   @Post('signup')
+  @HttpCode(HttpStatus.CREATED)
   signup(@Body() request: SignupDto) {
     return this.authService.signup(request);
   }
