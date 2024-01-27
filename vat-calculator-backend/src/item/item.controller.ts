@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -43,11 +45,12 @@ export class ItemController {
   @Get('active')
   @UseGuards(RolesGuard)
   @HasRoles(roles.norAdmin, roles.sales)
-  fetchAvailableItems() {
-    return this.itemService.fetchActiveItems();
+  fetchAvailableItems(@Query('search') search: string = '') {
+    return this.itemService.fetchActiveItems(search);
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @UseGuards(RolesGuard)
   @HasRoles(roles.norAdmin)
   createItem(@Body() itemInfo: createItemDto) {
@@ -55,6 +58,7 @@ export class ItemController {
   }
 
   @Put()
+  @HttpCode(HttpStatus.ACCEPTED)
   @UseGuards(RolesGuard)
   @HasRoles(roles.norAdmin)
   editItem(@Body() itemInfo: updateItemDto) {
@@ -62,6 +66,7 @@ export class ItemController {
   }
 
   @Delete(':itemId')
+  @HttpCode(HttpStatus.ACCEPTED)
   @UseGuards(RolesGuard)
   @HasRoles(roles.norAdmin)
   deleteItem(@Param('itemId') itemId: string) {
