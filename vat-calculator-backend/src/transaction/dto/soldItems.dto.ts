@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsDataURI,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class createSalesOrder {
   @IsNotEmpty()
@@ -28,8 +22,4 @@ export class createCreditRecord {
   @IsNotEmpty()
   @IsNumber({ maxDecimalPlaces: 2 })
   amountPayed: number;
-
-  @IsOptional()
-  @IsDataURI()
-  file: File;
 }
