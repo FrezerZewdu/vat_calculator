@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { JwtGuard } from 'src/auth/guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
@@ -12,6 +19,7 @@ export class InventoryController {
   constructor(private inventoryService: InventoryService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @UseGuards(RolesGuard)
   @HasRoles(roles.norAdmin, roles.finance)
   createInventoryRecord(@Body() inventoryRecord: createInventoryDto) {
