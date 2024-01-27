@@ -51,6 +51,7 @@ model Transaction {
   creditCloseDate DateTime?
   totalAmount Float
   remainingAmount Float?
+  isVat Boolean @default(false)
   void Boolean @default(false)
   voidDate DateTime? 
   soldItems SaleOrder []
