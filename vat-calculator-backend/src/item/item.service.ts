@@ -23,6 +23,7 @@ export class ItemService {
               isVat: true,
               quantity: true,
               unitPrice: true,
+              startDate: true,
             },
             orderBy: {
               startDate: 'desc',
@@ -32,6 +33,12 @@ export class ItemService {
             select: {
               isVat: true,
               quantity: true,
+              unitPrice: true,
+              transaction: {
+                select: {
+                  createdAt: true,
+                },
+              },
             },
           },
         },
@@ -92,11 +99,14 @@ export class ItemService {
     }
   }
 
-  async fetchActiveItems() {
+  async fetchActiveItems(search: string) {
     try {
       const activeItems = await this.prisma.item.findMany({
         where: {
           isActive: true,
+          name: {
+            contains: search.length > 0 ? search : undefined,
+          },
         },
         include: {
           inventoryRecords: {
@@ -125,6 +135,39 @@ export class ItemService {
         );
         if (inventorySum > soldItemsSum) {
           presentItems.push(item);
+        }
+      });
+      presentItems.forEach((item) => {
+        let normalSum = 0;
+        let vatSum = 0;
+        let normalSold = 0;
+        let vatSold = 0;
+        if (item.inventoryRecords.length) {
+          const latestPrice = item.inventoryRecords[0].unitPrice;
+          item.inventoryRecords.forEach((record) => {
+            if (record.isVat) {
+              vatSum += record.quantity;
+            } else {
+              normalSum += record.quantity;
+            }
+          });
+          item.soldItems.forEach((sale) => {
+            if (sale.isVat) {
+              vatSold += sale.quantity;
+            } else {
+              normalSold += sale.quantity;
+            }
+          });
+          const normalStockRemaining = normalSum - normalSold;
+          const vatStockRemaining = vatSum - vatSold;
+
+          item['vatStock'] = vatStockRemaining;
+          item['normalStock'] = normalStockRemaining;
+          item['latestPrice'] = latestPrice;
+        } else {
+          item['vatStock'] = 0;
+          item['normalStock'] = 0;
+          item['latestPrice'] = 0;
         }
       });
       return presentItems;
