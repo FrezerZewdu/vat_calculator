@@ -3,6 +3,7 @@ import { createPaginator } from 'prisma-pagination';
 import { PaginationInfoDto } from 'src/prisma/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
+  TransactionFiltersDto,
   createCreditRecord,
   createTransacitonDto,
   fetchTransactionDto,
@@ -13,8 +14,16 @@ import { Prisma, PrismaClient } from '@prisma/client';
 export class TransactionService {
   constructor(private prisma: PrismaService) {}
 
-  async fetchAllTransaction(paginationInfo: PaginationInfoDto) {
+  async fetchAllTransaction(
+    paginationInfo: PaginationInfoDto,
+    transactionFilters: TransactionFiltersDto,
+  ) {
     try {
+      // set date to start from midnight of selected day
+      const filterDate = new Date(transactionFilters.date);
+      filterDate.setHours(0);
+      filterDate.setMinutes(0);
+
       const perPage = paginationInfo.perPage;
       const paginate = createPaginator({ perPage });
       const transactions = await paginate<
@@ -23,6 +32,20 @@ export class TransactionService {
       >(
         this.prisma.transaction,
         {
+          where: {
+            createdAt: {
+              gte: filterDate,
+            },
+            remainingAmount: {
+              gte: transactionFilters.type === 'creditOnly' ? 0 : undefined,
+            },
+            isVat:
+              transactionFilters.type === 'vatOnly'
+                ? true
+                : transactionFilters.type === 'nonVatOnly'
+                  ? false
+                  : undefined,
+          },
           include: {
             soldItems: {
               include: {
@@ -70,6 +93,9 @@ export class TransactionService {
             },
             where: {
               itemId: item.itemId,
+              transaction: {
+                void: false,
+              },
             },
           });
 
@@ -99,7 +125,9 @@ export class TransactionService {
               },
               creditPayments: {
                 create: {
-                  amountPayed: transactionInfo.creditPayment.amountPayed,
+                  amountPayed:
+                    transactionInfo.totalAmount -
+                    transactionInfo.remainingAmount,
                   fileLocation,
                 },
               },
