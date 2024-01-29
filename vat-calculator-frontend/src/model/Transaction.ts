@@ -12,15 +12,30 @@ export type TransactionListType = {
 };
 
 export type SoldItemsType = {
-  name: string;
+  transactionId: number;
+  itemId: number;
   unitPrice: number;
   quantity: number;
-  isVat: boolean;
+  isVat: false;
+  item: item;
+};
+
+export type item = {
+  name: string;
+  unit: string;
 };
 
 export type CreditRecordType = {
+  transactionId: number;
+  date: string;
   amountPayed: number;
-  file: string;
+  fileLocation: string;
+};
+
+export type CreateCreditRecordType = {
+  transactionId: number;
+  amountPayed: number;
+  file?: File;
 };
 
 export interface TransactionFilters {
