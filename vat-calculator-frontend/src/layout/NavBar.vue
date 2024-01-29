@@ -4,6 +4,7 @@
     <hr class="mt-4 border border-white/50" />
     <div class="flex flex-col">
       <p
+        v-if="isRole(['supAdmin', 'norAdmin'])"
         :class="[choosenMenu != 1 ? 'bg-primary' : 'bg-primaryHover']"
         class="py-4 px-6 flex items-center text-white cursor-pointer"
         @click="routerPush('dashboard')"
@@ -23,6 +24,7 @@
         Dashboard
       </p>
       <p
+        v-if="isRole(['supAdmin', 'norAdmin', 'finance'])"
         :class="[choosenMenu != 2 ? 'bg-primary' : 'bg-primaryHover']"
         class="py-4 px-6 flex items-center text-white cursor-pointer"
         @click="routerPush('inventory')"
@@ -42,6 +44,7 @@
         Inventory
       </p>
       <p
+        v-if="isRole(['supAdmin', 'norAdmin', 'sales'])"
         :class="[choosenMenu != 3 ? 'bg-primary' : 'bg-primaryHover']"
         class="py-4 px-6 flex items-center text-white cursor-pointer"
         @click="$router.push('sales')"
@@ -61,6 +64,7 @@
         Sale
       </p>
       <p
+        v-if="isRole(['supAdmin', 'norAdmin', 'finance'])"
         :class="[choosenMenu != 4 ? 'bg-primary' : 'bg-primaryHover']"
         class="py-4 px-6 flex items-center text-white cursor-pointer"
         @click="$router.push('transactions')"
@@ -80,6 +84,7 @@
         Transaction
       </p>
       <p
+        v-if="isRole(['supAdmin', 'norAdmin'])"
         :class="[choosenMenu != 5 ? 'bg-primary' : 'bg-primaryHover']"
         class="py-4 px-6 flex items-center text-white cursor-pointer"
         @click="$router.push('accounts')"
@@ -103,8 +108,13 @@
 </template>
 <script lang="ts">
 import { routerPush } from "@/router";
+import { mapState } from "pinia";
+import { useAuthStore } from "@/stores/Auth";
 export default {
   props: ["choosenMenu"],
+  computed: {
+    ...mapState(useAuthStore, ["isRole"]),
+  },
   methods: {
     routerPush,
   },
