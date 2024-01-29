@@ -2,21 +2,31 @@ export type ItemListType = {
   id: number;
   name: string;
   unit: string;
-  currentPrice: number;
-  inStock: number;
-  inStockVat: number;
   isActive: boolean;
   createdBy: number;
+  inventoryRecords: InventoryRecords[];
+  soldItems: SoldItems[];
+  vatStock: number;
+  normalStock: number;
+  latestPrice: number;
 };
 
-export type ItemDetailType = {
-  id: number;
-  name: string;
-  inStock: object;
-  soldItem: object;
-  isActive: boolean;
-  currentPrice: number;
-  revenue: number;
+export type InventoryRecords = {
+  isVat: boolean;
+  quantity: number;
+  unitPrice: number;
+  startDate: string;
+};
+
+export type SoldItems = {
+  isVat: boolean;
+  quantity: number;
+  unitPrice: number;
+  transaction: TransactionDate;
+};
+
+export type TransactionDate = {
+  createdAt: string;
 };
 
 export type CreateItemType = {
@@ -29,16 +39,20 @@ export type SaleItemsType = {
   id: number;
   name: string;
   unit: string;
-  currentPrice: number;
-  inStock: number;
-  inStockVat: number;
   isActive: boolean;
   createdBy: number;
+  vatStock: number;
+  normalStock: number;
+  latestPrice: number;
   unitPrice: number;
   quantity: number;
-  isVat: boolean;
+  isVat: boolean | undefined;
 };
 
+export type SaleInformation = {
+  grandTotal: number;
+  upFrontPayment: number;
+};
 export interface ItemsFetchFilter {
   page: number;
   perPage: number;
