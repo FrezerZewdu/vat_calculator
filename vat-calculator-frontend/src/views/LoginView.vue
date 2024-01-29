@@ -7,7 +7,7 @@
       <p class="mt-6 text-black/70 text-center text-sm">
         Welcome back. Login with your email and password.
       </p>
-      <form @submit.prevent="login" class="mt-6 flex flex-col space-y-3">
+      <form @submit.prevent="checkLogin" class="mt-6 flex flex-col space-y-3">
         <input
           type="text"
           class="py-1 pl-1 border rounded"
@@ -24,7 +24,7 @@
         >
           <!-- loading animation -->
           <svg
-            v-if="loading"
+            v-if="loginLoading"
             class="mr-2"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -58,23 +58,36 @@
   </div>
 </template>
 <script lang="ts">
-import { routerPush } from "../router/index";
-export default {
+import { defineComponent } from "vue";
+import { useAuthStore } from "../stores/Auth";
+import { mapState, mapActions } from "pinia";
+
+export default defineComponent({
   data() {
     return {
       credentials: {
         email: "",
         password: "",
       },
-      loading: false,
       errMessage: "",
     };
   },
+  computed: {
+    ...mapState(useAuthStore, ["loginLoading"]),
+  },
   methods: {
-    async login() {
+    ...mapActions(useAuthStore, ["login"]),
+    async checkLogin() {
       // login logic
-      await routerPush("inventory");
+      if (
+        this.credentials.email.length > 0 &&
+        this.credentials.password.length > 0
+      ) {
+        await this.login({ ...this.credentials });
+      } else {
+        // toast error message
+      }
     },
   },
-};
+});
 </script>
