@@ -35,6 +35,7 @@
     "tests/**/*.ts",
     "tests/**/*.tsx",
     "./modules.d.ts",
+    "./augmentations.d.ts",
   ],
   "exclude": [
     "node_modules"
