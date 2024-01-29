@@ -15,5 +15,9 @@ export const SHORT_DATETIME_OPTIONS = {
 
 export const FETCH_SUCCESS_STATUS = 200;
 export const POST_SUCCESS_STATUS = 201;
+export const PUT_SUCCESS_STATUS = 202;
+export const SERVER_ERROR_STATUS = 500;
+export const UNAUTHORIZED_ERROR_STATUS = 401 | 403;
+export const UNPROCESSABLE_CONTENT_STATUS = 422;
 
 export const VAT_PERCENTAGE = 0.15;
