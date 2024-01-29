@@ -36,6 +36,7 @@ export const useAuthStore = defineStore("authStore", {
             if (response.status === FETCH_SUCCESS_STATUS) {
               this.saveToken(response.data.access_token);
               this.userProfile = response.data.data;
+              this.isLoggedIn = true;
               await routerPush("inventory");
             } else {
               toaster.error("Incorrect email or password");
