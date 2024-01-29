@@ -1,5 +1,6 @@
 import {
   createRouter,
+  RouteLocationNormalized,
   createWebHistory,
   RouteRecordRaw,
   RouteParams,
@@ -16,13 +17,15 @@ export type AppRouteName =
   | "transactions"
   | "accounts";
 
-const authStore = useAuthStore();
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "login",
     component: LoginView,
+    meta: {
+      requiresAuth: false,
+      roles: ["supAdmin", "norAdmin", "sales", "finance"],
+    },
   },
   {
     path: "/main",
@@ -33,60 +36,45 @@ const routes: Array<RouteRecordRaw> = [
         path: "dashboard",
         name: "dashboard",
         component: () => import("../views/dashboard/DashboardIndex.vue"),
-        beforeEnter: (to, from, next) => {
-          if (authStore.isRole(["supAdmin", "norAdmin"])) {
-            next();
-          } else {
-            next({ name: "login" });
-          }
+        meta: {
+          requiresAuth: true,
+          roles: ["supAdmin", "norAdmin"],
         },
       },
       {
         path: "inventory",
         name: "inventory",
         component: () => import("../views/inventory/InventoryIndex.vue"),
-        beforeEnter: (to, from, next) => {
-          if (authStore.isRole(["supAdmin", "norAdmin", "finance"])) {
-            next();
-          } else {
-            next({ name: "login" });
-          }
+        meta: {
+          requiresAuth: true,
+          roles: ["supAdmin", "norAdmin", "finance"],
         },
       },
       {
         path: "sales",
         name: "sales",
         component: () => import("../views/sale/SaleIndex.vue"),
-        beforeEnter: (to, from, next) => {
-          if (authStore.isRole(["supAdmin", "norAdmin", "sales"])) {
-            next();
-          } else {
-            next({ name: "login" });
-          }
+        meta: {
+          requiresAuth: true,
+          roles: ["supAdmin", "norAdmin", "sales"],
         },
       },
       {
         path: "transactions",
         name: "transactions",
         component: () => import("../views/transaction/TransactionIndex.vue"),
-        beforeEnter: (to, from, next) => {
-          if (authStore.isRole(["supAdmin", "norAdmin", "finance"])) {
-            next();
-          } else {
-            next({ name: "login" });
-          }
+        meta: {
+          requiresAuth: true,
+          roles: ["supAdmin", "norAdmin", "finance"],
         },
       },
       {
         path: "accounts",
         name: "accounts",
         component: () => import("../views/account/AccountIndex.vue"),
-        beforeEnter: (to, from, next) => {
-          if (authStore.isRole(["supAdmin", "norAdmin"])) {
-            next();
-          } else {
-            next({ name: "login" });
-          }
+        meta: {
+          requiresAuth: true,
+          roles: ["supAdmin", "norAdmin"],
         },
       },
     ],
@@ -96,6 +84,18 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to: RouteLocationNormalized) => {
+  const authStore = useAuthStore();
+
+  if (!authStore.isLoggedIn && to.name !== "login") {
+    return { name: "login" };
+  }
+
+  if (to.meta.requiresAuth && !authStore.isRole(to.meta.roles)) {
+    return { name: "login" };
+  }
 });
 
 export function routerPush(name: AppRouteName, params?: RouteParams) {
