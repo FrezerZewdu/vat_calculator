@@ -1,6 +1,11 @@
-import { DATETIME_OPTIONS } from "./constant";
+import { DATETIME_OPTIONS, SHORT_DATETIME_OPTIONS } from "./constant";
 
 const filter = {
+  shortDate(rawDate: Date): string {
+    return rawDate != null
+      ? new Date(rawDate).toLocaleDateString("en-US", SHORT_DATETIME_OPTIONS)
+      : "-";
+  },
   readableDate(rawDate: string): string {
     return rawDate != null
       ? new Date(rawDate).toLocaleDateString("en-US", DATETIME_OPTIONS)
