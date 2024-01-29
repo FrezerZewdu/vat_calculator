@@ -82,7 +82,7 @@
       <p
         :class="[choosenMenu != 5 ? 'bg-primary' : 'bg-primaryHover']"
         class="py-4 px-6 flex items-center text-white cursor-pointer"
-        @click="$router.push('')"
+        @click="$router.push('accounts')"
       >
         <svg
           class="mr-3"

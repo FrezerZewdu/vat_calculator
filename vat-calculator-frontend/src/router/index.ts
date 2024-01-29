@@ -40,6 +40,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "transactions",
         component: () => import("../views/transaction/TransactionIndex.vue"),
       },
+      {
+        path: "accounts",
+        name: "accounts",
+        component: () => import("../views/account/AccountIndex.vue"),
+      },
     ],
   },
 ];
