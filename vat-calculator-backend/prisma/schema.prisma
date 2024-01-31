@@ -38,7 +38,7 @@ model Inventory {
   itemId Int
   item Item @relation(fields: [itemId], references: [id])
   startDate DateTime @default(now())
-  unitPrice Decimal
+  unitPrice Float
   quantity Float
   isVat Boolean
 
