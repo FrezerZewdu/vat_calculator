@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { createPaginator } from 'prisma-pagination';
 import { PaginationInfoDto } from 'src/prisma/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FetchAccountsDto, updateAccountDto } from './dto';
 import { Prisma } from '@prisma/client';
+import { roles } from 'src/auth/dto/enums';
 
 @Injectable()
 export class AccountService {
@@ -20,6 +21,15 @@ export class AccountService {
             name: {
               contains: search.length > 0 ? search : undefined,
             },
+            role: {
+              not: roles.supAdmin,
+            },
+          },
+          select: {
+            name: true,
+            email: true,
+            createdBy: true,
+            role: true,
           },
         },
         {
@@ -40,9 +50,12 @@ export class AccountService {
         },
         data: { ...userInfo },
       });
+      delete account.password;
       return account;
     } catch (error) {
-      console.log(error);
+      if (error.code == 'P2025') {
+        throw new UnprocessableEntityException('Account Id does not exist');
+      }
     }
   }
 
@@ -55,7 +68,9 @@ export class AccountService {
       });
       return account;
     } catch (error) {
-      console.log(error);
+      if (error.code == 'P2025') {
+        throw new UnprocessableEntityException('Account Id does not exist');
+      }
     }
   }
 }
