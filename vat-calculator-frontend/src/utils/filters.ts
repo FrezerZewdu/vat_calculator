@@ -1,4 +1,5 @@
 import { DATETIME_OPTIONS, SHORT_DATETIME_OPTIONS } from "./constant";
+import colorLib from "@kurkle/color";
 
 const filter = {
   shortDate(rawDate: Date): string {
@@ -17,6 +18,10 @@ const filter = {
       currency: currencyISO3,
     });
     return value != null ? formatter.format(value) : "-";
+  },
+  transparentize(value: string, opacity: number) {
+    const alpha = opacity === undefined ? 0.5 : 1 - opacity;
+    return colorLib(value).alpha(alpha).rgbString();
   },
 };
 
